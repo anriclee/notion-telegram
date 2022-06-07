@@ -36,11 +36,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		chatID := os.Getenv("CHAT_ID")
 		chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
 
-		var png []byte
+		content, err := reqQRCode()
+		if err != nil {
+			log.Printf("request qr code failed:%+v", err)
+			return
+		}
 
-		png, err := qrcode.Encode("1cFW4h6xgXolhx7ewW447xyMUa0", qrcode.Medium, 256)
+		png, err := qrcode.Encode(content, qrcode.Medium, 256)
 		if err != nil {
 			log.Printf("encode qr failed:%+v", err)
+			return
 		}
 
 		msg := tgbotapi.NewPhoto(chatIDValue, tgbotapi.FileBytes{"code", png})
