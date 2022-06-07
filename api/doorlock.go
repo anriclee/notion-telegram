@@ -1,7 +1,6 @@
 package api
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"json"
@@ -60,7 +59,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("send message to bot failed:%+v", err)
 	}
 
-	fmt.Fprintf(w, "send photo ok")
+	fmt.Fprintf(w, "result:"+content)
 }
 
 func reqQRCode() (string, error) {
