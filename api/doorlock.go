@@ -48,8 +48,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg := tgbotapi.NewPhoto(chatIDValue, tgbotapi.FileBytes{"code", png})
-	if _, err := bot.Send(msg); err != nil {
+	photoMsg := tgbotapi.NewPhoto(chatIDValue, tgbotapi.FileBytes{"code", png})
+	if _, err := bot.Send(photoMsg); err != nil {
 		log.Printf("send message to bot failed:%+v", err)
 	}
 
