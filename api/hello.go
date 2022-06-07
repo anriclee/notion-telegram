@@ -12,11 +12,29 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+type TelegramBody struct {
+	UpdatedID string  `json:"update_id"`
+	Message   Message `json:"message"`
+}
+
+type Message struct {
+	MessageID string `json:"message_id"`
+	From      struct {
+		ID    int  `json:"id"`
+		IsBot bool `json:"is_bot"`
+	} `json:"from"`
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Printf("parse form values failed:%+v", err)
+	}
 	body, _ := r.GetBody()
 	bytes, _ := io.ReadAll(body)
 	msg := string(bytes)
-	log.Printf("receive msg from telegram,request body is:%+v", msg)
+	log.Printf("receive msg from telegram,request body is:%+v,id:%v", msg, r.FormValue("id"))
+
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
 		log.Printf("create telegram bot failed:%+v", err)
