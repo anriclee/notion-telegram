@@ -13,6 +13,8 @@ import (
 	"github.com/skip2/go-qrcode"
 )
 
+var client = http.Client{Timeout: 5 * time.Minute}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -35,18 +37,47 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
 
 		var png []byte
+
 		png, err := qrcode.Encode("1cFW4h6xgXolhx7ewW447xyMUa0", qrcode.Medium, 256)
 		if err != nil {
 			log.Printf("encode qr failed:%+v", err)
 		}
 
 		msg := tgbotapi.NewPhoto(chatIDValue, tgbotapi.FileBytes{"code", png})
-
 		if _, err := bot.Send(msg); err != nil {
 			log.Printf("send message to bot failed:%+v", err)
 		}
 	}()
 
-	currentTime := time.Now().Format(time.RFC850)
-	fmt.Fprintf(w, currentTime)
+	fmt.Fprintf(w, "receive cmd ok")
+}
+
+func reqQRCode() (string, error) {
+	req, err := http.NewRequest("POST", "http://doorcloud.sohochina.com/rest/sohoweCharTect/getOwnerQrCode", nil)
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+
+	req.Form.Add("userLinglingid", "00EEF073")
+	req.Form.Add("supportControl", "0")
+	req.Form.Add("jurId", "278")
+
+	response, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != 200 {
+		return "", fmt.Errorf("code not ok:%v", response.StatusCode)
+	}
+
+	bytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
 }
