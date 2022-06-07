@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -58,16 +59,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func reqQRCode() (string, error) {
-	req, err := http.NewRequest("POST", "http://doorcloud.sohochina.com/rest/sohoweCharTect/getOwnerQrCode", nil)
+	req, err := http.NewRequest("POST", "http://doorcloud.sohochina.com/rest/sohoweCharTect/getOwnerQrCode", strings.NewReader("userLinglingid=00EEF073&supportControl=0&jurId=278"))
 	if err != nil {
 		return "", err
 	}
 
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-
-	req.Form.Add("userLinglingid", "00EEF073")
-	req.Form.Add("supportControl", "0")
-	req.Form.Add("jurId", "278")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	response, err := client.Do(req)
 	if err != nil {
