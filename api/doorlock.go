@@ -26,14 +26,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	msg := string(bytes)
 	log.Printf("receive msg from telegram,request body is:%+v,id:%v", msg, r.FormValue("id"))
 
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
+	bot, err := tgbotapi.NewBotAPI(os.Getenv("DOOR_TELEGRAM_TOKEN"))
 	if err != nil {
 		log.Printf("create telegram bot failed:%+v", err)
 	}
 
 	bot.Debug = true
 
-	chatID := os.Getenv("CHAT_ID")
+	chatID := os.Getenv("DOOR_BOT_ID")
 	chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
 
 	content, err := reqQRCode()
