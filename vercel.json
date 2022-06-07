@@ -1,41 +1,8 @@
 {
 	"routes": [
 		{
-			"src": "/redirect",
-			"status": 308,
-			"headers": {
-				"Location": "https://example.com/"
-			}
-		},
-		{
-			"src": "/custom-page",
-			"headers": {
-				"cache-control": "s-maxage=1000"
-			},
-			"dest": "/index.html"
-		},
-		{
-			"src": "/api",
-			"dest": "/my-api.js"
-		},
-		{
-			"src": "/users",
-			"methods": [
-				"POST"
-			],
-			"dest": "/users-api.js"
-		},
-		{
-			"src": "/(?<id>[^/]*)/api/hello/",
+			"src": "/random/(?<id>[^/]*)/api/hello/",
 			"dest": "/api/hello.go?id=$id"
-		},
-		{
-			"src": "/legacy",
-			"status": 404
-		},
-		{
-			"src": "/.*",
-			"dest": "https://my-old-site.com"
 		}
 	]
 }
