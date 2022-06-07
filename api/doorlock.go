@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"json"
 	"log"
 	"net/http"
 	"os"
