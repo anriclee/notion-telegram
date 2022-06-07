@@ -33,29 +33,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	bot.Debug = true
 
-	go func() {
-		chatID := os.Getenv("CHAT_ID")
-		chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
+	chatID := os.Getenv("CHAT_ID")
+	chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
 
-		content, err := reqQRCode()
-		if err != nil {
-			log.Printf("request qr code failed:%+v", err)
-			return
-		}
+	content, err := reqQRCode()
+	if err != nil {
+		log.Printf("request qr code failed:%+v", err)
+		return
+	}
 
-		png, err := qrcode.Encode(content, qrcode.Medium, 256)
-		if err != nil {
-			log.Printf("encode qr failed:%+v", err)
-			return
-		}
+	png, err := qrcode.Encode(content, qrcode.Medium, 256)
+	if err != nil {
+		log.Printf("encode qr failed:%+v", err)
+		return
+	}
 
-		msg := tgbotapi.NewPhoto(chatIDValue, tgbotapi.FileBytes{"code", png})
-		if _, err := bot.Send(msg); err != nil {
-			log.Printf("send message to bot failed:%+v", err)
-		}
-	}()
+	msg := tgbotapi.NewPhoto(chatIDValue, tgbotapi.FileBytes{"code", png})
+	if _, err := bot.Send(msg); err != nil {
+		log.Printf("send message to bot failed:%+v", err)
+	}
 
-	fmt.Fprintf(w, "receive cmd ok")
+	fmt.Fprintf(w, "send photo ok")
 }
 
 func reqQRCode() (string, error) {
