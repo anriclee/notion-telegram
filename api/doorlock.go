@@ -1,8 +1,10 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"json"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +17,11 @@ import (
 )
 
 var client = http.Client{Timeout: 5 * time.Minute}
+
+type QRCode struct {
+	Result string `json:"result"`
+	Status string `json:"status"`
+}
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
@@ -79,5 +86,12 @@ func reqQRCode() (string, error) {
 		return "", err
 	}
 
-	return string(bytes), nil
+	qrCode := new(QRCode)
+
+	err = json.Unmarshal(bytes, qrCode)
+	if err != nil {
+		return "", fmt.Errorf("unmarshal bytes failed:%+v", err)
+	}
+
+	return qrCode.Result, nil
 }
