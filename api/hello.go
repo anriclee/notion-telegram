@@ -47,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
 		msg := tgbotapi.NewMessage(chatIDValue, msg)
 
-		msg.text += r.FormValue("id")
+		msg.Text = msg.Text + "#######" + r.FormValue("id")
 
 		if _, err := bot.Send(msg); err != nil {
 			log.Printf("send message to bot failed:%+v", err)
