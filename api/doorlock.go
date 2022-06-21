@@ -40,6 +40,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	bot.Debug = true
 
 	chatID := os.Getenv("DOOR_BOT_ID")
+	if chatID != r.FormValue("id") {
+		return
+	}
 	chatIDValue, _ := strconv.ParseInt(chatID, 10, 64)
 
 	content, err := reqQRCode()
